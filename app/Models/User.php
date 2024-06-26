@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Devdojo\Auth\Models\User as AuthUser;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class User extends AuthUser
 {
@@ -71,7 +72,10 @@ class User extends AuthUser
             if(!$user->avatar && !$pass){
                 $socProv = DB::table('social_provider_user')->where('user_id', $user->id)->first();
                 $user->avatar = $socProv ? $socProv->avatar : null;
-                $user->oauth = $socProv;
+                if($socProv){
+                    $oath = json_decode($socProv->provider_data, true);
+                    Log::info($oath);
+                }
             }
         });
     }
