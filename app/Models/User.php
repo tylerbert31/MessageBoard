@@ -74,7 +74,7 @@ class User extends AuthUser
                 $user->avatar = $socProv ? $socProv->avatar : null;
                 if($socProv){
                     $oath = json_decode($socProv->provider_data, true);
-                    Log::info($oath);
+                    $user->oauth = json_decode($oath, true);
                 }
             }
         });
