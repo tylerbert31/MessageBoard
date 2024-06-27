@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,8 +16,19 @@ class HomeController extends Controller
     }
 
     public function dashboard(){
-        $res = axios('get', 'https://reqres.in/api/users');
-        log_info($res, __METHOD__, __LINE__);
         return Inertia::render('Dashboard');
+    }
+
+    public function chat($id){
+        $receiver = User::find($id);
+
+        if(!$receiver){
+            return redirect()->route('dashboard');
+        }
+        $set = [
+            'id' => $id,
+            'receiver' => $receiver
+        ];
+        return $set;
     }
 }

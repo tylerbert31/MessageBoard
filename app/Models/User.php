@@ -67,16 +67,30 @@ class User extends AuthUser
         parent::boot();
 
         static::retrieved(function ($user) {
-            // OAuth Avatar
+            // no pass = OAuth
             $pass = $user->makeVisible('password')->password;
-            if(!$user->avatar && !$pass){
+
+            if(!$pass){
                 $socProv = DB::table('social_provider_user')->where('user_id', $user->id)->first();
-                $user->avatar = $socProv ? $socProv->avatar : null;
+                
                 if($socProv){
+                    // If no Profile Picture
+                    if(!$user->avatar){
+                        $user->avatar = $socProv ? $socProv->avatar : "/images/Baldski.webp";
+                    }
                     $oath = json_decode($socProv->provider_data, true);
-                    $user->oauth = json_decode($oath, true);
+                    $oath_data = json_decode($oath, true);
+                    $user->first_name = $oath_data['given_name'];
+                    $user->last_name = $oath_data['family_name'];
                 }
+            } else if (!$user->avatar) {
+                $user->avatar = "/images/Baldski.webp";
             }
+
+            unset($user->two_factor_confirmed_at);
+            unset($user->two_factor_recovery_codes);
+            unset($user->two_factor_secret);
+            unset($user->password);
         });
     }
 }
