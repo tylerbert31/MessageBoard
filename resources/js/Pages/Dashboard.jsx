@@ -24,7 +24,7 @@ export default function Dashboard({ auth, convo }) {
     };
 
     return (
-        <main className='bg-base-200 min-h-dvh flex flex-col'>
+        <main className='bg-base-200 h-screen max-h-[100vh] flex flex-col'>
             <Navbar user={auth.user} />
             <Head title="Dashboard" />
             <div className='flex min-w-full p-3 gap-3 grow'>
@@ -52,7 +52,7 @@ export default function Dashboard({ auth, convo }) {
                     )}
                 </div>
                 {/* Chat */}
-                <div className='grow min-h-full bg-base-100 rounded-lg shadow-sm flex flex-col'>
+                <div className='grow min-h-full bg-base-100 rounded-lg justify-between shadow-sm flex flex-col'>
                     {convo && (<MessageList convo={convo}/>)}
                 </div>
             </div>
