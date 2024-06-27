@@ -27,7 +27,7 @@ export default function Dashboard({ auth }) {
             <div className='flex min-w-full p-3 gap-3 grow'>
                 {/* Convos */}
                 <div className='w-[120px] sm:w-[240px] md:w-[350px] bg-base-100 min-h-full rounded-lg p-3 shadow-sm flex flex-col'>
-                    <div className="search w-full flex flex-row max-h-12 items-center">
+                    <div className="search w-full flex flex-row max-h-12 items-center justify-center sm:justify-start">
                         <button className={`p-2 m-1 rounded-full hover:bg-gray-100 transition-all ${searchOpen ? '' : 'hidden'}`}
                             onClick={searchBlur}
                         >
@@ -36,13 +36,13 @@ export default function Dashboard({ auth }) {
                         </svg>
                         </button>
                         <input type="text" placeholder="Search"
-                            className="input input-bordered grow max-w-xs self-center rounded-full"
+                            className="input input-bordered grow self-center rounded-full min-w-[80px] hidden sm:block"
                             onFocus={() => setSearchOpen(true)}
                             onChange={handleSearchChange}
                         />
                     </div>
                     {searchOpen && (
-                        <div className="search_results py-3 flex flex-col gap-y-1 overflow-y-scroll">
+                        <div className="search_results py-3 grow flex flex-col gap-y-1 overflow-y-scroll">
                             <SearchResult search={search} />
                         </div>
                     )}

@@ -36,7 +36,7 @@ const SearchResultsData = (search) => {
 const Card = ({person}) => {
     return (
         <>
-            <a href="https://youtube.com" className='flex flex-row w-full h-15 gap-x-3 px-2 hover:bg-base-300 py-2 rounded-lg'>
+            <a href={`/chat/${person.id}`} className='flex flex-row w-full h-15 gap-x-3 px-2 hover:bg-base-300 py-2 rounded-lg justify-center sm:justify-start'>
                 <div className=' flex items-center'>
                     <div className="avatar">
                         <div className="w-12 rounded-full">
@@ -44,7 +44,7 @@ const Card = ({person}) => {
                         </div>
                     </div>
                 </div>
-                <div className='items-start pt-2 font-bold text-gray-600'>
+                <div className='items-start pt-2 font-bold text-gray-600 hidden sm:block'>
                     {person.name}
                 </div>
             </a>

@@ -16,6 +16,7 @@ class ApiController extends Controller
         $name = $name == '' ? null : '%'.$name.'%';
 
         $users = User::where($where, $type, $name)
+            ->where('id', '!=', auth()->user()->id)
             ->select('id', 'name', 'avatar')
             ->orderBy('name', 'asc')
             ->limit(10)
