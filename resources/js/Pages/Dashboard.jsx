@@ -1,8 +1,17 @@
 import { Navbar } from '@/Components/NavBar';
 import { Head } from '@inertiajs/react';
+import React, { useState } from 'react';
 
 export default function Dashboard({ auth }) {
-    console.log(auth.user)
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [search, setSearch] = useState('');
+    const searchBlur = () => {
+        if(!search.length){
+            setSearchOpen(false);
+            setSearch('');
+        }
+    }
+
     return (
         <main className='bg-base-200 min-h-dvh flex flex-col'>
             <Navbar user={auth.user} />
@@ -10,7 +19,25 @@ export default function Dashboard({ auth }) {
             <div className='flex min-w-full p-3 gap-3 grow'>
                 {/* Convos */}
                 <div className='w-[120px] sm:w-[240px] md:w-[350px] bg-base-100 min-h-full rounded-lg p-3 shadow-sm flex flex-col'>
-                    <input type="text" placeholder="Search" className="input input-bordered w-full max-w-xs self-center rounded-full" />
+                    <div className="search w-full flex flex-row max-h-12 items-center">
+                        <button className={`p-2 m-1 rounded-full hover:bg-gray-100 transition-all ${searchOpen ? '' : 'hidden'}`}
+                            onClick={()=>{
+                                setSearchOpen(false);
+                                setSearch('');
+                            }}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-gray-500">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
+                        </svg>
+                        </button>
+                        <input type="text" placeholder="Search"
+                            className="input input-bordered grow max-w-xs self-center rounded-full"
+                            onFocus={() => setSearchOpen(true)}
+                            onBlur={searchBlur}
+                            onChange={(e) => setSearch(e.target.value)}
+                            value={search}
+                        />
+                    </div>
                 </div>
                 {/* Chat */}
                 <div className='grow bg-base-100 rounded-lg p-3 shadow-sm'>
