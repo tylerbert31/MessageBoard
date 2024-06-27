@@ -15,8 +15,6 @@ class HomeController extends Controller
     }
 
     public function dashboard(){
-        $res = axios('get', 'https://reqres.in/api/users');
-        log_info($res, __METHOD__, __LINE__);
         return Inertia::render('Dashboard');
     }
 }
