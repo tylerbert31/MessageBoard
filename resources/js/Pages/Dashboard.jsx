@@ -42,7 +42,7 @@ export default function Dashboard({ auth }) {
                         />
                     </div>
                     {searchOpen && (
-                        <div className="search_results py-3 flex flex-col gap-y-1">
+                        <div className="search_results py-3 flex flex-col gap-y-1 overflow-y-scroll">
                             <SearchResult search={search} />
                         </div>
                     )}
