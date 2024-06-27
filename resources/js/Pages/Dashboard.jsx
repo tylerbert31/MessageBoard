@@ -1,16 +1,19 @@
+import MessageList from '@/Components/Dashboard/MessageList';
 import SearchResult from '@/Components/Dashboard/SearchResult';
 import { Navbar } from '@/Components/NavBar';
 import { Head } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, convo }) {
     const [searchOpen, setSearchOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [searchTimeout, setSearchTimeout] = useState(null);
+    const inputRef = useRef(null);
 
     const searchBlur = () => {
-            setSearchOpen(false);
-            setSearch('');
+        setSearch('');
+        setSearchOpen(false);
+        inputRef.current.value = '';
     }
 
     const handleSearchChange = (e) => {
@@ -26,7 +29,7 @@ export default function Dashboard({ auth }) {
             <Head title="Dashboard" />
             <div className='flex min-w-full p-3 gap-3 grow'>
                 {/* Convos */}
-                <div className='w-[120px] sm:w-[240px] md:w-[350px] bg-base-100 min-h-full rounded-lg p-3 shadow-sm flex flex-col'>
+                <div className='w-[100px] sm:w-[240px] md:w-[350px] bg-base-100 min-h-full rounded-lg p-3 shadow-sm flex flex-col'>
                     <div className="search w-full flex flex-row max-h-12 items-center justify-center sm:justify-start">
                         <button className={`p-2 m-1 rounded-full hover:bg-gray-100 transition-all ${searchOpen ? '' : 'hidden'}`}
                             onClick={searchBlur}
@@ -39,6 +42,7 @@ export default function Dashboard({ auth }) {
                             className="input input-bordered grow self-center rounded-full min-w-[80px] hidden sm:block"
                             onFocus={() => setSearchOpen(true)}
                             onChange={handleSearchChange}
+                            ref={inputRef}
                         />
                     </div>
                     {searchOpen && (
@@ -48,8 +52,8 @@ export default function Dashboard({ auth }) {
                     )}
                 </div>
                 {/* Chat */}
-                <div className='grow bg-base-100 rounded-lg p-3 shadow-sm'>
-                    
+                <div className='grow min-h-full bg-base-100 rounded-lg shadow-sm flex flex-col'>
+                    {convo && (<MessageList convo={convo}/>)}
                 </div>
             </div>
         </main>
