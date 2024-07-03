@@ -1,36 +1,28 @@
 import { Head, usePage } from '@inertiajs/react';
-import axios from 'axios';
 import React, { useState } from 'react'
-import { sendNewMessage } from '@/lib/hooks';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
+import { sendNewMessage, useGetConvo } from '@/lib/hooks';
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from '@/lib/queryClient';
 
 const MessageList = ({convo}) => {
     const {receiver} = convo;
     
-  return (
+return (
     <>
-        <Head title={receiver.first_name ?? receiver.name} />
-        <NavbarReceiver receiver={receiver} />
-        
-        <div className='grow bg-base-200 m-3 !mt-0 rounded-lg overflow-y-scroll pl-3'>
-            <div className=''>
-                <Chats convo={convo}/>
-                <Chats convo={convo}/>
-                <Chats convo={convo}/>
-                <Chats convo={convo}/>
-                <Chats convo={convo}/>
-            </div>
-        </div>
-
-        <div className='w-full h-20'>
+            <Head title={receiver.first_name ?? receiver.name} />
+            <NavbarReceiver receiver={receiver} />
+            
             <QueryClientProvider client={queryClient}>
-                <MessageInput convo={convo}/>
+                <div className='grow bg-base-200 m-3 !mt-0 rounded-lg overflow-y-scroll pl-3 flex flex-col-reverse'>
+                    <Chats convo={convo}/>
+                </div>
+
+                <div className='w-full h-20 '>
+                    <MessageInput convo={convo}/>
+                </div>
             </QueryClientProvider>
-        </div>
     </>
-  )
+)
 }
 
 const MessageInput = ({convo}) => {
@@ -40,12 +32,15 @@ const MessageInput = ({convo}) => {
         setMessage('');
     }
 
-    const { isPending, mutate } = sendNewMessage(convo.id, message, clearMessage);
+    const { isPending, mutate, isSuccess } = sendNewMessage(convo.id, message, clearMessage);
     const sendMessage = (e) => {
         e.preventDefault();
         if(!message) return;
         mutate();
     }
+
+    // Refetch after sending
+    if(isSuccess) queryClient.invalidateQueries(`convo_${convo.id}`);
 
 
     return (
@@ -100,17 +95,21 @@ const NavbarReceiver = ({receiver}) => {
 const Chats = ({convo}) => {
     const {props: {auth: {user}}} = usePage();
     const user_id = user.id;
+    const messages = [];
+    const { data, isLoading, isSuccess, isError, error } = useGetConvo(convo.id);
+    if(isSuccess){
+       messages.push(...data.data)
+    }
     
     return (
         <>
-            <div className="chat chat-start">
+        {messages && messages.map((chat, index) => (
+            <div key={index} className={`chat ${chat.sender == user_id ? 'chat-end' : 'chat-start'} pb-2`}>
                 <div className="chat-bubble">
-                    It's over Anakin
+                    {chat.message}
                 </div>
             </div>
-            <div className="chat chat-end">
-                <div className="chat-bubble">You underestimate my power!</div>
-            </div>
+            ))}
         </>
     )
 }
