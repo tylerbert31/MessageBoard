@@ -21,6 +21,9 @@ const Convos = () => {
     const {props: {convo}} = usePage();
     const convos = [];
     if(isSuccess) {
+        data.data.sort((a, b) => {
+            return new Date(b.latest_message.created_at) - new Date(a.latest_message.created_at);
+        });
         convos.push(...data.data);
     }
     const conversation_id = convo?.id ?? -1;
