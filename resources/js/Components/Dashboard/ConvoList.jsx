@@ -18,7 +18,8 @@ const ConvoList = () => {
 
 const Convos = () => {
     const { data, isLoading, isError, isSuccess } = getConvoList();
-    const {props: {convo}} = usePage();
+    const {props: {convo, auth}} = usePage();
+    const user = auth.user;
     const convos = [];
     if(isSuccess) {
         data.data.sort((a, b) => {
@@ -29,8 +30,12 @@ const Convos = () => {
     const conversation_id = convo?.id ?? -1;
     return (
         <>
-            {convos && convos.map((convo_list) => (
-                (<Link key={convo_list.conversation_id} href={`/messages/${convo_list.conversation_id}`} className={`flex flex-row min-w-full h-15 gap-x-3 px-2 hover:bg-base-300 py-2 rounded-lg justify-center sm:justify-start ${convo_list.conversation_id == conversation_id ? ' bg-base-200' : ''}`}>
+            {convos && convos.map((convo_list) => {
+                let read_style = 'font-light';
+                if(convo_list.latest_message && convo_list.latest_message.read_at == null && convo_list.latest_message.sender != user.id){
+                    read_style = 'font-extrabold';
+                }
+                return (<Link key={convo_list.conversation_id} href={`/messages/${convo_list.conversation_id}`} className={`flex flex-row min-w-full h-15 gap-x-3 px-2 hover:bg-base-300 py-2 rounded-lg justify-center sm:justify-start ${convo_list.conversation_id == conversation_id ? ' bg-base-200' : ''}`}>
                     <div className=' flex items-center'>
                         <div className="avatar">
                             <div className="w-12 rounded-full">
@@ -40,10 +45,10 @@ const Convos = () => {
                     </div>
                     <div className='items-start pt-2 font-extrabold text-gray-600 hidden sm:block'>
                         {convo_list.user_data.name}
-                        <p className=' font-light'>{convo_list.latest_message.message}</p>
+                        {convo_list.latest_message && (<p className={read_style}>{convo_list.latest_message.message}</p>)}
                     </div>
                 </Link>)
-            ))}
+            })}
         </>
     )
 }
