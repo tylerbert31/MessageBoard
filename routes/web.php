@@ -14,6 +14,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/chat/{id}', [HomeController::class, 'chat'])->name('chat');
+    Route::get('/messages/{convo_id}', [HomeController::class, 'messages'])->name('messages');
     
     // Api Routes
     require __DIR__.'/api.php';

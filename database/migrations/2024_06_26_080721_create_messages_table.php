@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->integer("convo_id")->unsigned();
             $table->foreign("convo_id")->references("id")->on("convos")->onDelete("cascade");
-            $table->string("content");
+            $table->integer("sender")->unsigned();
+            $table->foreign("sender")->references("id")->on("users")->onDelete("cascade");
+            $table->string("message");
             $table->timestamps();
         });
     }

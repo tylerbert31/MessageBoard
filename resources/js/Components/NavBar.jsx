@@ -1,7 +1,6 @@
 import { Link } from "@inertiajs/react";
 
 export const Navbar = ({user = null}) => {
-    console.log(user)
     return (
         <>
             <div className="navbar bg-base-100 shadow-sm">

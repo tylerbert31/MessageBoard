@@ -1,16 +1,20 @@
+import ConvoList from '@/Components/Dashboard/ConvoList';
+import MessageList from '@/Components/Dashboard/MessageList';
 import SearchResult from '@/Components/Dashboard/SearchResult';
 import { Navbar } from '@/Components/NavBar';
 import { Head } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, convo }) {
     const [searchOpen, setSearchOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [searchTimeout, setSearchTimeout] = useState(null);
+    const inputRef = useRef(null);
 
     const searchBlur = () => {
-            setSearchOpen(false);
-            setSearch('');
+        setSearch('');
+        setSearchOpen(false);
+        inputRef.current.value = '';
     }
 
     const handleSearchChange = (e) => {
@@ -21,12 +25,12 @@ export default function Dashboard({ auth }) {
     };
 
     return (
-        <main className='bg-base-200 min-h-dvh flex flex-col'>
+        <main className='bg-base-200 h-screen max-h-[100vh] flex flex-col'>
             <Navbar user={auth.user} />
             <Head title="Dashboard" />
             <div className='flex min-w-full p-3 gap-3 grow'>
                 {/* Convos */}
-                <div className='w-[120px] sm:w-[240px] md:w-[350px] bg-base-100 min-h-full rounded-lg p-3 shadow-sm flex flex-col'>
+                <div className='min-w-[100px] sm:min-w-[240px] md:min-w-[350px] max-w-[100px] sm:max-w-[240px] md:max-w-[350px] bg-base-100 min-h-full rounded-lg p-3 shadow-sm flex flex-col gap-y-3'>
                     <div className="search w-full flex flex-row max-h-12 items-center justify-center sm:justify-start">
                         <button className={`p-2 m-1 rounded-full hover:bg-gray-100 transition-all ${searchOpen ? '' : 'hidden'}`}
                             onClick={searchBlur}
@@ -39,6 +43,7 @@ export default function Dashboard({ auth }) {
                             className="input input-bordered grow self-center rounded-full min-w-[80px] hidden sm:block"
                             onFocus={() => setSearchOpen(true)}
                             onChange={handleSearchChange}
+                            ref={inputRef}
                         />
                     </div>
                     {searchOpen && (
@@ -46,10 +51,13 @@ export default function Dashboard({ auth }) {
                             <SearchResult search={search} />
                         </div>
                     )}
+                    {!searchOpen && (
+                        <ConvoList />
+                    )}
                 </div>
                 {/* Chat */}
-                <div className='grow bg-base-100 rounded-lg p-3 shadow-sm'>
-                    
+                <div className='h-full w-full bg-base-100 rounded-lg justify-between shadow-sm flex flex-col overflow-hidden'  style={{maxHeight: `calc(100dvh - 90px)`}}>
+                    {convo && (<MessageList convo={convo}/>)}
                 </div>
             </div>
         </main>
