@@ -1,7 +1,7 @@
 import React from 'react'
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from '@/lib/queryClient';
-import { usePage } from '@inertiajs/react';
+import { usePage, Link } from '@inertiajs/react';
 import { getConvoList } from '@/lib/hooks';
 
 const ConvoList = () => {
@@ -30,7 +30,7 @@ const Convos = () => {
     return (
         <>
             {convos && convos.map((convo_list) => (
-                (<a key={convo_list.conversation_id} href={`/messages/${convo_list.conversation_id}`} className={`flex flex-row min-w-full h-15 gap-x-3 px-2 hover:bg-base-300 py-2 rounded-lg justify-center sm:justify-start ${convo_list.conversation_id == conversation_id ? ' bg-base-200' : ''}`}>
+                (<Link key={convo_list.conversation_id} href={`/messages/${convo_list.conversation_id}`} className={`flex flex-row min-w-full h-15 gap-x-3 px-2 hover:bg-base-300 py-2 rounded-lg justify-center sm:justify-start ${convo_list.conversation_id == conversation_id ? ' bg-base-200' : ''}`}>
                     <div className=' flex items-center'>
                         <div className="avatar">
                             <div className="w-12 rounded-full">
@@ -42,7 +42,7 @@ const Convos = () => {
                         {convo_list.user_data.name}
                         <p className=' font-light'>{convo_list.latest_message.message}</p>
                     </div>
-                </a>)
+                </Link>)
             ))}
         </>
     )
