@@ -22,7 +22,6 @@ export const Navbar = ({user = null}) => {
                 }, 5000);
 
                 bell.play();
-                console.log(msg);
                 queryClient.invalidateQueries('convo_list');
             });
         }
