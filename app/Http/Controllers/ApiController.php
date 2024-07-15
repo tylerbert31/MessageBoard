@@ -78,6 +78,7 @@ class ApiController extends Controller
         } else {
             $messages = Message::where('convo_id', $convo)
                 ->orderBy('created_at', 'desc')
+                ->take(15)
                 ->get();
         }
 

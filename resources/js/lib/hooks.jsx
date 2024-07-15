@@ -19,9 +19,9 @@ export const sendNewMessage = (convo_id, message, callback) => {
 
 export const useGetConvo = (convo_id) => {
   return useQuery({
-    queryKey: [`convo_${convo_id}`, convo_id],
-    queryFn: () => axios.post(`/api/convo`,{convo_id}),
-    refetchInterval: 5 * 1000,
+    queryKey: [`convo_${convo_id}`],
+    queryFn: async () => await axios.post(`/api/convo`,{convo_id:convo_id}),
+    refetchInterval: 15 * 1000
   });
 }
 

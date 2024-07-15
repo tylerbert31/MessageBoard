@@ -1,6 +1,33 @@
 import { Link } from "@inertiajs/react";
+import { useEffect } from "react";
+import { queryClient } from "@/lib/queryClient";
+import { io } from "socket.io-client";
+
+export const socket = io('http://localhost:3030');
 
 export const Navbar = ({user = null}) => {
+
+    const bell = new Audio('/sounds/bell.mp3');
+    useEffect(() => {
+
+        if(user) {
+            socket.on(`user_${user.id}`, (msg) => {
+
+                const originalTitle = document.title;
+                const newMessage = 'New Message';
+                document.title = newMessage;
+
+                setTimeout(() => {
+                    document.title = originalTitle;
+                }, 5000);
+
+                bell.play();
+                console.log(msg);
+                queryClient.invalidateQueries('convo_list');
+            });
+        }
+    },[socket]);
+
     return (
         <>
             <div className="navbar bg-base-100 shadow-sm">
