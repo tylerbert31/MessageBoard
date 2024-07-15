@@ -134,7 +134,7 @@ const Chats = ({convo}) => {
                 return (
                     <div key={index} className={`chat ${chat_pos} pb-2`}>
                         <div className="chat-bubble">
-                            <span className={`tooltip ${tooltip_pos}`} data-tip={`${read_or_sent} at ${msg_time}`}>
+                            <span className={`tooltip ${tooltip_pos} text-start`} data-tip={`${read_or_sent} at ${msg_time}`}>
                                 {chat.message}
                             </span>
                         </div>

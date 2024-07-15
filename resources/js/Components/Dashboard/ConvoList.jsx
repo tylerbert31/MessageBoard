@@ -45,7 +45,7 @@ const Convos = () => {
                     </div>
                     <div className='items-start pt-2 font-extrabold text-gray-600 hidden sm:block'>
                         {convo_list.user_data.name}
-                        {convo_list.latest_message && (<p className={read_style}>{convo_list.latest_message.message}</p>)}
+                        {convo_list.latest_message && (<p className={`${read_style} truncate max-w-24 md:max-w-48`}>{`${convo_list.latest_message.message}. `}<span className=' text-gray-500 text-sm'>{` ${new Date(convo_list.latest_message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}</span></p>)}
                     </div>
                 </Link>)
             })}
