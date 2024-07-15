@@ -121,13 +121,27 @@ const Chats = ({convo}) => {
 
     return (
         <>
-        {messages && messages.map((chat, index) => (
-            <div key={index} className={`chat ${chat.sender == user_id ? 'chat-end' : 'chat-start'} pb-2`}>
-                <div className="chat-bubble">
-                    {chat.message}
-                </div>
-            </div>
-            ))}
+            {messages && messages.map((chat, index) => {
+                const sender = chat.sender == user_id;
+                const chat_pos = sender ? 'chat-end' : 'chat-start';
+                const tooltip_pos = sender ? 'tooltip-left' : 'tooltip-right';
+                const isLast = index == 0;
+                const read_or_sent = chat.read && chat.sender == user_id && isLast ? 'Read' : 'Sent';
+                const sent_at = new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const read_at = new Date(chat.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const msg_time = isLast && chat.read && chat.sender == user_id ? read_at : sent_at;
+
+                return (
+                    <div key={index} className={`chat ${chat_pos} pb-2`}>
+                        <div className="chat-bubble">
+                            <span className={`tooltip ${tooltip_pos}`} data-tip={`${read_or_sent} at ${msg_time}`}>
+                                {chat.message}
+                            </span>
+                        </div>
+                        {isLast && (<div className="chat-footer opacity-50">{chat.read ? "Seen" : chat.sender != user_id ? '' : 'Delivered'}</div>)}
+                    </div>
+                )
+            })}
         </>
     )
 }
