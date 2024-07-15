@@ -1,6 +1,6 @@
 import { Head, usePage } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
-import { sendNewMessage, useGetConvo } from '@/lib/hooks';
+import { sendNewMessage, useGetConvo, readLatestMessage } from '@/lib/hooks';
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from '@/lib/queryClient';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -44,16 +44,21 @@ const MessageInput = ({convo}) => {
         mutate();
     }
 
+    const readLatest = () => {
+        readLatestMessage(convo.id);
+    }
 
     return (
         <form onSubmit={sendMessage} className='w-full h-16 flex flex-row py-2 px-3 items-center'>
             <input required name="message"
                 type="text"
-                className='w-full h-full input input-bordered rounded-full'
+                className='w-full h-full input input-bordered rounded-full !cursor-text'
                 placeholder='Type a message...'
                 onChange={(e) => setMessage(e.target.value)}
                 value={message}
                 readOnly={isPending}
+                onFocus={readLatest}
+                autoComplete='off'
             />
             {!isPending && (
                 <button className='btn ml-2 rounded-full' disabled={isPending}>

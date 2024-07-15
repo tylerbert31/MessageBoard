@@ -7,9 +7,11 @@ use App\Models\Message;
 use App\Models\ConvoMember;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Controllers\HomeController;
 
 class ApiController extends Controller
 {
+    
     public function searchPerson(Request $req){
         $status = 200;
         $name = $req->input('search')['search'] ?? null;
@@ -105,5 +107,21 @@ class ApiController extends Controller
         }
 
         return response($recepients, $status);
+    }
+
+    public function readMessage(Request $req){
+        $status = 200;
+        $convo = $req->input('convo_id');
+        $res_message = 'Message read';
+
+        if(!$convo){
+            $status = 400;
+            $res_message = 'Invalid request';
+        } else {
+            $homeController = new HomeController();
+            $homeController->readLatestMessage($convo);
+        }
+
+        return response($res_message, $status);
     }
 }

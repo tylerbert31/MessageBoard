@@ -32,7 +32,7 @@ const Convos = () => {
         <>
             {convos && convos.map((convo_list) => {
                 let read_style = 'font-light';
-                if(convo_list.latest_message && convo_list.latest_message.read_at == null && convo_list.latest_message.sender != user.id){
+                if(convo_list.latest_message && convo_list.latest_message.read == false && convo_list.latest_message.sender != user.id){
                     read_style = 'font-extrabold';
                 }
                 return (<Link key={convo_list.conversation_id} href={`/messages/${convo_list.conversation_id}`} className={`flex flex-row min-w-full h-15 gap-x-3 px-2 hover:bg-base-300 py-2 rounded-lg justify-center sm:justify-start ${convo_list.conversation_id == conversation_id ? ' bg-base-200' : ''}`}>

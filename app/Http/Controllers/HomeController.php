@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Convo;
 use App\Models\ConvoMember;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,11 @@ class HomeController extends Controller
     }
 
     public function messages($convo_id){
+
+        if(!$convo_id){
+            return redirect()->route('dashboard');
+        }
+
         $convo = ConvoMember::where('conversation_id', $convo_id)
             ->where('user_id', auth()->user()->id)
             ->first();
@@ -52,6 +58,8 @@ class HomeController extends Controller
 
         $receiver_data = User::find($convo_receiver->user_id);
         $convo_data['receiver'] = $receiver_data;
+
+        $this->readLatestMessage($convo_id);
 
         $set = [
             'convo_id' => $convo_id,
@@ -86,5 +94,45 @@ class HomeController extends Controller
             $convo_id = $our_convo->conversation_id;
         }
         return $convo_id;
+    }
+    
+    public function readLatestMessage($convo_id){
+        if(!$convo_id){
+            log_info('No Convo ID');
+            return;
+        }
+
+        if(!$this->isMyConvo($convo_id)){
+            log_info('Not my Convo');
+            return;
+        }
+
+        $current_user = auth()->user()->id;
+
+        $latest = Message::where('convo_id', $convo_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if($latest && !$latest->read && $latest->sender != $current_user ){
+            $latest->read = true;
+            $latest->save();
+            log_info("Read Message ID: {$latest->id}");
+        }
+
+        return;
+    }
+
+    public function isMyConvo($convo_id){
+        $valid = false;
+
+        $isMyConvo = ConvoMember::where('conversation_id', $convo_id)
+            ->where('user_id', auth()->user()->id)
+            ->first();
+
+        if($isMyConvo){
+            $valid = true;
+        }
+
+        return $valid;
     }
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer("sender")->unsigned();
             $table->foreign("sender")->references("id")->on("users")->onDelete("cascade");
             $table->string("message");
+            $table->boolean("read")->default(false);
             $table->timestamps();
         });
     }
