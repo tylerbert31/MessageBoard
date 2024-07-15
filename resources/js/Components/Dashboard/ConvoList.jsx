@@ -32,7 +32,7 @@ const Convos = () => {
         <>
             {convos && convos.map((convo_list) => {
                 let read_style = 'font-light';
-                if(convo_list.latest_message && convo_list.latest_message.read_at == null && convo_list.latest_message.sender != user.id){
+                if(convo_list.latest_message && convo_list.latest_message.read == false && convo_list.latest_message.sender != user.id){
                     read_style = 'font-extrabold';
                 }
                 return (<Link key={convo_list.conversation_id} href={`/messages/${convo_list.conversation_id}`} className={`flex flex-row min-w-full h-15 gap-x-3 px-2 hover:bg-base-300 py-2 rounded-lg justify-center sm:justify-start ${convo_list.conversation_id == conversation_id ? ' bg-base-200' : ''}`}>
@@ -45,7 +45,7 @@ const Convos = () => {
                     </div>
                     <div className='items-start pt-2 font-extrabold text-gray-600 hidden sm:block'>
                         {convo_list.user_data.name}
-                        {convo_list.latest_message && (<p className={read_style}>{convo_list.latest_message.message}</p>)}
+                        {convo_list.latest_message && (<p className={`${read_style} truncate max-w-24 md:max-w-48`}>{`${convo_list.latest_message.message}. `}<span className=' text-gray-500 text-sm'>{` ${new Date(convo_list.latest_message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}</span></p>)}
                     </div>
                 </Link>)
             })}

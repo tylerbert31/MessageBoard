@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryClient } from "./queryClient";
 import axios from "axios";
 
 export const useSearchPeople = (search = 'x') => {
@@ -31,4 +32,10 @@ export const getConvoList = () => {
     queryFn: () => axios.get('/api/convo/list'),
     refetchInterval: 10 * 1000,
   });
+}
+
+export const readLatestMessage = async (convo_id) => {
+  await axios.post('/api/readLatest', {convo_id});
+  queryClient.invalidateQueries(`convo_list`);
+  return;
 }
