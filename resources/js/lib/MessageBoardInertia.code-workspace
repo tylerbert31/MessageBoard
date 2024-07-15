@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../../npm/socket_msg_brd"
+		}
+	],
+	"settings": {}
+}

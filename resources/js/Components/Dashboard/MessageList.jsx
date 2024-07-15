@@ -1,12 +1,14 @@
 import { Head, usePage } from '@inertiajs/react';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { sendNewMessage, useGetConvo } from '@/lib/hooks';
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from '@/lib/queryClient';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { socket } from '../NavBar';
 
 const MessageList = ({convo}) => {
     const {receiver} = convo;
-    
+
 return (
     <>
             <Head title={receiver.first_name ?? receiver.name} />
@@ -20,27 +22,27 @@ return (
                 <div className='w-full h-20 '>
                     <MessageInput convo={convo}/>
                 </div>
+                {/* <ReactQueryDevtools buttonPosition='bottom-left' initialIsOpen={false} /> */}
             </QueryClientProvider>
     </>
 )
 }
 
 const MessageInput = ({convo}) => {
-    
+    const {props: {auth: {user}}} = usePage();
     const [message, setMessage] = useState('');
     const clearMessage = () => {
+        socket.emit('send_msg', {receiver: convo.receiver.id, sender: user.id, message: message});
+        queryClient.invalidateQueries(`convo_${convo.id}`);
         setMessage('');
     }
 
-    const { isPending, mutate, isSuccess } = sendNewMessage(convo.id, message, clearMessage);
+    const { isPending, mutate, isFetched } = sendNewMessage(convo.id, message, clearMessage);
     const sendMessage = (e) => {
         e.preventDefault();
         if(!message) return;
         mutate();
     }
-
-    // Refetch after sending
-    if(isSuccess) queryClient.invalidateQueries(`convo_${convo.id}`);
 
 
     return (
@@ -51,6 +53,7 @@ const MessageInput = ({convo}) => {
                 placeholder='Type a message...'
                 onChange={(e) => setMessage(e.target.value)}
                 value={message}
+                readOnly={isPending}
             />
             {!isPending && (
                 <button className='btn ml-2 rounded-full' disabled={isPending}>
@@ -95,12 +98,22 @@ const NavbarReceiver = ({receiver}) => {
 const Chats = ({convo}) => {
     const {props: {auth: {user}}} = usePage();
     const user_id = user.id;
-    const messages = [];
-    const { data, isLoading, isSuccess, isError, error } = useGetConvo(convo.id);
-    if(isSuccess){
-       messages.push(...data.data)
-    }
-    
+    const [messages, setMessages] = useState([]);
+
+    const { data, fetchStatus, refetch} = useGetConvo(convo.id);
+
+    useEffect(() => {
+        socket.on(`user_${user.id}`, (msg) => {
+            refetch();
+        });
+    },[socket]);
+
+    useEffect(() => {
+        if(fetchStatus == "idle") {
+            setMessages(data.data);
+        }
+    },[fetchStatus]);
+
     return (
         <>
         {messages && messages.map((chat, index) => (
